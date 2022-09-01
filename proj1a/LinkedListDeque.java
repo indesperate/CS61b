@@ -8,11 +8,11 @@ public class LinkedListDeque<T> {
     /** internal implement of list node. */
     private class LinkedListNode {
         /** item of list. */
-        public T item;
+        private T item;
         /** record the node before. */
-        public LinkedListNode before;
+        private LinkedListNode before;
         /** record hte mode next. */
-        public LinkedListNode next;
+        private LinkedListNode next;
 
         /** one parameter constructor. */
         LinkedListNode(T i) {
@@ -30,7 +30,7 @@ public class LinkedListDeque<T> {
     }
 
     /** the constructor of class LinkedListDeque. */
-    LinkedListDeque() {
+    public LinkedListDeque() {
         sentinel = new LinkedListNode(null);
         sentinel.next = sentinel;
         sentinel.before = sentinel;
