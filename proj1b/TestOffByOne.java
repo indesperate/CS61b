@@ -5,7 +5,8 @@ public class TestOffByOne {
     static CharacterComparator offByOne = new OffByOne();
 
     @Test
-    public void CheckOffByOne() {
+    public void testOffByOne() {
+        assertFalse(offByOne.equalChars('a', 'B'));
         assertTrue(offByOne.equalChars('a', 'b'));
         assertTrue(offByOne.equalChars('r', 'q'));
         assertFalse(offByOne.equalChars('z', 'a'));
