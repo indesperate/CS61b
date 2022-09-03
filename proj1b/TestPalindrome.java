@@ -21,4 +21,13 @@ public class TestPalindrome {
         String test2 = "wow";
         assertTrue(palindrome.isPalindrome(test2));
     }
+
+    @Test
+    public void testIsPalindromeUseComparator() {
+        String test1 = "flake";
+        String test2 = "wow";
+        CharacterComparator comparator = new OffByOne();
+        assertTrue(palindrome.isPalindrome(test1, comparator));
+        assertFalse(palindrome.isPalindrome(test2, comparator));
+    }
 }

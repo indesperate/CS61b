@@ -28,4 +28,22 @@ public class Palindrome {
         Deque<Character> wordDeque = wordToDeque(word);
         return checkPalindrome(wordDeque);
     }
+
+    /** a helper function the help check the word deque use a comparator */
+    private boolean checkPalindrome(Deque<Character> wordDeque, CharacterComparator comparator) {
+        if (wordDeque.size() <= 1) {
+            return true;
+        }
+        if (comparator.equalChars(wordDeque.removeFirst(), wordDeque.removeLast())) {
+            return checkPalindrome(wordDeque, comparator);
+        } else {
+            return false;
+        }
+    }
+
+    /** check the string is palindrome use a compare function */
+    public boolean isPalindrome(String word, CharacterComparator comparator) {
+        Deque<Character> wordDeque = wordToDeque(word);
+        return checkPalindrome(wordDeque, comparator);
+    }
 }
