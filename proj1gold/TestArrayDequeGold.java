@@ -15,11 +15,13 @@ public class TestArrayDequeGold {
                     error = error + "addFirst(" + i + ")\n";
                     solution.addFirst(i);
                     answer.addFirst(i);
+                    assertEquals(solution.get(0), answer.get(0));
                     break;
                 case 1:
                     error = error + "addLast(" + i + ")\n";
                     solution.addLast(i);
                     answer.addLast(i);
+                    assertEquals(solution.getLast(), answer.get(answer.size() - 1));
                     break;
                 case 2:
                     error = error + "removeFirst()\n";
@@ -28,10 +30,6 @@ public class TestArrayDequeGold {
                 default:
                     error = error +  "removeLast()\n";
                     assertEquals(error, solution.removeLast() ,answer.removeLast());
-            }
-            assertEquals(error, solution.size(), answer.size());
-            for (int j = 0; j < solution.size(); j++) {
-                assertEquals(error, solution.get(j), answer.get(j));
             }
         }
     }
