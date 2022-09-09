@@ -14,11 +14,15 @@ public class TestArrayRingBuffer {
             arb.enqueue(i);
         }
         assertTrue(arb.isFull());
+        int k = 0;
+        for (int i : arb) {
+            assertEquals(i, k);
+            k += 1;
+        }
         for (int i = 0; i < 10; i += 1) {
             assertEquals((Integer) i, arb.dequeue());
         }
         assertTrue(arb.isEmpty());
-        assertNull(arb.peek());
         arb.enqueue(10);
         arb.enqueue(10000);
         assertEquals((Integer)10, arb.peek());

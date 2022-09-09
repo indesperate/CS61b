@@ -1,6 +1,9 @@
 package synthesizer;
+
+import java.util.Iterator;
+
 /** a interface which declares all the methods. */
-public interface BoundedQueue<T> {
+public interface BoundedQueue<T> extends Iterable<T> {
     /** return size of the buffer. */
     int capacity();
     /** return number of items currently in the buffer. */
@@ -19,4 +22,6 @@ public interface BoundedQueue<T> {
     default boolean isFull() {
         return fillCount() >= capacity();
     }
+    @Override
+    Iterator<T> iterator();
 }
