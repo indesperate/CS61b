@@ -4,27 +4,27 @@ ArrayDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: use capacity resize instead of two method will avoid repeating code.
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: Resize copy, reset the array, so addFirst and add Last method can easily work.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: several code can be replace with helper functions.
 
 Q: What did you learn by talking to your partner about writing ArrayDeque?
 
-A:
+A: Avoid code repeating.
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A: It is a circle list.
 
 Q: If you wrote ArrayDeque again, what would you do differently, if anything?
 
-A:
+A: write less repeated code.
 
 -----
 
@@ -32,27 +32,27 @@ LinkedListDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: Sentinel node.
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: Properly the remove function.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A: the testing code.
 
 Q: What did you learn by talking to your partner about writing LinkedListDeque?
 
-A:
+A: java visualize is quite usefull.
 
 Q: What do you wish you would have known before writing LinkedListDeque, if anything?
 
-A:
+A: the importance of testing.
 
 Q: If you wrote LinkedListDeque again, what would you do differently, if anything?
 
-A:
+A: write test first.
 
 -----
 
@@ -60,4 +60,4 @@ Meta:
 
 Q: Did you like this design review process? Anything we should do differently next time?
 
-A: 
+A: Totolly fine.
