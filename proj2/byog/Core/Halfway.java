@@ -1,23 +1,29 @@
 package byog.Core;
 
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Random;
 
 public class Halfway {
-    final util.Direction direction;
-    final Room fRoom;
-    final Room sRoom;
+    Point first;
+    Point second;
+    Boolean direction;
 
-    final Random random;
-    public Halfway(Random random, Room fRoom, Room sRoom, util.Direction direction) {
-        this.direction = direction;
-        this.fRoom = fRoom;
-        this.sRoom = sRoom;
-        this.random = random;
+    public Halfway(Random random, Room fRoom, Room sRoom) {
+        if (fRoom.position.x > sRoom.position.x) {
+            Room temp = fRoom;
+            fRoom = sRoom;
+            sRoom = temp;
+        }
+        first = fRoom.generatePoint();
+        second = sRoom.generatePoint();
+        direction = RandomUtils.bernoulli(random);
     }
 
+
     public void draw(TETile[][] world) {
+        Util.drawLThreeLine(world, first, second, Tileset.FLOOR, Tileset.WALL, direction);
     }
 }

@@ -3,6 +3,8 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
+import java.io.StringReader;
+
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
@@ -28,14 +30,27 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        // TODO: Fill out this method to run the game using the input passed in,
-        // and return a 2D tile representation of the world that would have been
-        // drawn if the same inputs had been given to playWithKeyboard().
-        int seed = 1001;
+        long seed = 0;
+        try {
+            StringReader reader = new StringReader(input.toLowerCase());
+            while (true) {
+                if (reader.read() == 'n') {
+                    break;
+                }
+            }
+            while (true) {
+                int c = reader.read();
+                if (c == 's') {
+                    break;
+                }
+                seed = (c - '0')  + seed * 10;
+            }
+            reader.close();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Error during startup of service", e);
+        }
+
         WorldGenerator worldGenerator = new WorldGenerator(WIDTH, HEIGHT, seed);
-        TETile[][] finalWorldFrame = worldGenerator.generateWorld();
-        ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(finalWorldFrame);
-        return finalWorldFrame;
+        return worldGenerator.generateWorld();
     }
 }
