@@ -17,7 +17,11 @@ public class Util {
         return !typeIn.equals(Tileset.FLOOR) || !typeToDraw.equals(Tileset.WALL);
     }
 
-    public static void drawLine(TETile[][] tiles, Point point, int length, Direction direction, TETile type) {
+    public static void drawLine(TETile[][] tiles,
+                                Point point,
+                                int length,
+                                Direction direction,
+                                TETile type) {
         switch (direction) {
             case NORTH: {
                 for (int i = 0; i < length; i += 1) {
@@ -51,10 +55,16 @@ public class Util {
                 }
                 break;
             }
+            default:
+                break;
         }
     }
 
-    public static void drawHollowRect(TETile[][] tiles, Point point, int width, int height, TETile type) {
+    public static void drawHollowRect(TETile[][] tiles,
+                                      Point point,
+                                      int width,
+                                      int height,
+                                      TETile type) {
         Point instancePoint = new Point(point);
         drawLine(tiles, instancePoint, height - 1, Direction.NORTH, type);
         instancePoint.y += height - 1;
@@ -65,7 +75,11 @@ public class Util {
         drawLine(tiles, instancePoint, width - 1, Direction.WEST, type);
     }
 
-    public static void drawRect(TETile[][] tiles, Point point, int width, int height, TETile type) {
+    public static void drawRect(TETile[][] tiles,
+                                Point point,
+                                int width,
+                                int height,
+                                TETile type) {
         Point instancePoint = new Point(point);
         for (int i = 0; i < height; i += 1) {
             drawLine(tiles, instancePoint, width, Direction.EAST, type);
@@ -73,7 +87,10 @@ public class Util {
         }
     }
 
-    public static void drawLine(TETile[][] tiles, Point first, Point second, TETile type) {
+    public static void drawLine(TETile[][] tiles,
+                                Point first,
+                                Point second,
+                                TETile type) {
         assert first.x == second.x || first.y == second.y;
         if (first.equals(second)) {
             return;
@@ -93,7 +110,11 @@ public class Util {
         }
     }
 
-    public static void drawThreeLine(TETile[][] tiles, Point first, Point second, TETile in, TETile wrap) {
+    public static void drawThreeLine(TETile[][] tiles,
+                                     Point first,
+                                     Point second,
+                                     TETile in,
+                                     TETile wrap) {
         assert first.x == second.x || first.y == second.y;
         if (first.equals(second)) {
             return;
@@ -126,7 +147,11 @@ public class Util {
         }
     }
 
-    public static void drawLThreeLinePart(TETile[][] tiles, Point first, Point second, TETile in, TETile wrap) {
+    public static void drawLThreeLinePart(TETile[][] tiles,
+                                          Point first,
+                                          Point second,
+                                          TETile in,
+                                          TETile wrap) {
         assert first.x == second.x || first.y == second.y;
         if (first.equals(second)) {
             return;
@@ -159,7 +184,12 @@ public class Util {
         }
     }
 
-    public static void drawLThreeLine(TETile[][] tiles, Point first, Point second, TETile in, TETile wrap, boolean direction) {
+    public static void drawLThreeLine(TETile[][] tiles,
+                                      Point first,
+                                      Point second,
+                                      TETile in,
+                                      TETile wrap,
+                                      boolean direction) {
         if (first.x == second.x || first.y == second.y) {
             drawThreeLine(tiles, first, second, in, wrap);
             return;
