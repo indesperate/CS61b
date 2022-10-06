@@ -4,13 +4,17 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.awt.Point;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Halfway {
+public class Halfway implements Serializable {
     Point first;
     Point second;
     Boolean direction;
 
+    @Serial
+    private static final long serialVersionUID = 231239823474L;
     public Halfway(Random random, Room fRoom, Room sRoom) {
         if (fRoom.position.x > sRoom.position.x) {
             Room temp = fRoom;

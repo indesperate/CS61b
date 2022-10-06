@@ -4,10 +4,12 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.awt.Point;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-public class Room {
+public class Room implements Serializable {
     /**
      * the bottom left position of the room.
      */
@@ -16,6 +18,8 @@ public class Room {
     int height;
     Random random;
 
+    @Serial
+    private static final long serialVersionUID = 45498234798734234L;
     /**
      * generator the room use a random number
      */

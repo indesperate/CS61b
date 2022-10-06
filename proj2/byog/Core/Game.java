@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
 
 import java.io.StringReader;
 
@@ -15,6 +16,65 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        GameUI gameUI = new GameUI(WIDTH, HEIGHT);
+        gameUI.drawUI();
+        WorldGenerator worldGenerator = null;
+        while (true) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char c = StdDraw.nextKeyTyped();
+            if (Character.toLowerCase(c) == 'n') {
+                break;
+            }
+            if (Character.toLowerCase(c) == 'l') {
+                worldGenerator = Util.loadWorld();
+                break;
+            }
+            if (Character.toLowerCase(c) == 'q') {
+                System.exit(0);
+                return;
+            }
+        }
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        if (worldGenerator == null) {
+            worldGenerator = new WorldGenerator(WIDTH, HEIGHT, gameUI.getSeed());
+        }
+        ter.initialize(WIDTH, HEIGHT);
+        worldGenerator.drawWorld(world);
+        ter.renderFrame(world);
+        while (true) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char c = Character.toLowerCase(StdDraw.nextKeyTyped());
+            switch (c) {
+                case 'w' : {
+                    worldGenerator.playerMove(world, Util.Direction.NORTH);
+                    break;
+                }
+                case 'a' : {
+                    worldGenerator.playerMove(world, Util.Direction.WEST);
+                    break;
+                }
+                case 'd' : {
+                    worldGenerator.playerMove(world, Util.Direction.EAST);
+                    break;
+                }
+                case 's' : {
+                    worldGenerator.playerMove(world, Util.Direction.SOUTH);
+                    break;
+                }
+                case 'q' : {
+                    Util.saveWorld(worldGenerator);
+                    System.exit(0);
+                    break;
+                }
+                default:
+                    break;
+            }
+            ter.renderFrame(world);
+        }
     }
 
     /**
@@ -49,8 +109,9 @@ public class Game {
         } catch (java.io.IOException e) {
             throw new RuntimeException("Error during startup of service", e);
         }
-
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
         WorldGenerator worldGenerator = new WorldGenerator(WIDTH, HEIGHT, seed);
-        return worldGenerator.generateWorld();
+        worldGenerator.drawWorld(world);
+        return world;
     }
 }

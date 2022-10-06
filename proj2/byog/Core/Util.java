@@ -4,6 +4,7 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.awt.Point;
+import java.io.*;
 
 public class Util {
     public enum Direction {
@@ -204,5 +205,47 @@ public class Util {
         }
         drawLThreeLinePart(tiles, first, mid, in, wrap);
         drawLThreeLinePart(tiles, second, mid, in, wrap);
+    }
+
+    public static void saveWorld(WorldGenerator worldGenerator) {
+        File f = new File("./world.ser");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fs = new FileOutputStream(f);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(worldGenerator);
+            os.close();
+        }  catch (FileNotFoundException e) {
+            System.out.println("file not found");
+            System.exit(0);
+        } catch (IOException e) {
+            System.out.println(e);
+            System.exit(0);
+        }
+    }
+
+    public static WorldGenerator loadWorld() {
+        File f = new File("./world.ser");
+        if (f.exists()) {
+            try {
+                FileInputStream fs = new FileInputStream(f);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                WorldGenerator loadWorld = (WorldGenerator) os.readObject();
+                os.close();
+                return loadWorld;
+            } catch (FileNotFoundException e) {
+                System.out.println("file not found");
+                System.exit(0);
+            } catch (IOException e) {
+                System.out.println(e);
+                System.exit(0);
+            } catch (ClassNotFoundException e) {
+                System.out.println("class not found");
+                System.exit(0);
+            }
+        }
+        return null;
     }
 }
