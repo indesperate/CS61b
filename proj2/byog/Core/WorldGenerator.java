@@ -106,6 +106,7 @@ public class WorldGenerator implements Serializable {
                 if (world[player.x - 1][player.y].equals(Tileset.FLOOR)) {
                     player.x -= 1;
                 }
+                break;
             }
             default: {
                 break;
