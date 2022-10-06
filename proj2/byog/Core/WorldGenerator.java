@@ -83,28 +83,28 @@ public class WorldGenerator implements Serializable {
         world[player.x][player.y] = Tileset.PLAYER;
     }
 
-    public void playerMove(TETile[][] world, Util.Direction direction) {
+    public void playerMove(TETile[][] world, char c) {
         world[player.x][player.y] = Tileset.FLOOR;
-        switch (direction) {
-            case NORTH: {
+        switch (c) {
+            case 'w': {
                 if (world[player.x][player.y + 1].equals(Tileset.FLOOR)) {
                     player.y += 1;
                 }
                 break;
             }
-            case EAST: {
+            case 'd': {
                 if (world[player.x + 1][player.y].equals(Tileset.FLOOR)) {
                     player.x += 1;
                 }
                 break;
             }
-            case SOUTH: {
+            case 's': {
                 if (world[player.x][player.y - 1].equals(Tileset.FLOOR)) {
                     player.y -= 1;
                 }
                 break;
             }
-            case WEST: {
+            case 'a': {
                 if (world[player.x - 1][player.y].equals(Tileset.FLOOR)) {
                     player.x -= 1;
                 }

@@ -1,5 +1,6 @@
 package byog.Core;
 
+import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Font;
 import java.awt.Color;
@@ -61,5 +62,30 @@ public class GameUI {
             seed.append('0');
         }
         return Integer.parseInt(seed.toString());
+    }
+
+    public WorldGenerator begin() {
+        while (true) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char c = StdDraw.nextKeyTyped();
+            if (Character.toLowerCase(c) == 'n') {
+                break;
+            }
+            if (Character.toLowerCase(c) == 'l') {
+                return Util.loadWorld();
+            }
+            if (Character.toLowerCase(c) == 'q') {
+                System.exit(0);
+            }
+        }
+        return null;
+    }
+
+    public void underMouse(TETile teTile) {
+        StdDraw.setPenColor(Color.white);
+        StdDraw.textLeft(2, height + 1, teTile.description());
+        StdDraw.show();
     }
 }

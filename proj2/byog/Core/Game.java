@@ -2,8 +2,10 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import byog.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 public class Game {
@@ -18,62 +20,51 @@ public class Game {
     public void playWithKeyboard() {
         GameUI gameUI = new GameUI(WIDTH, HEIGHT);
         gameUI.drawUI();
-        WorldGenerator worldGenerator = null;
-        while (true) {
-            if (!StdDraw.hasNextKeyTyped()) {
-                continue;
-            }
-            char c = StdDraw.nextKeyTyped();
-            if (Character.toLowerCase(c) == 'n') {
-                break;
-            }
-            if (Character.toLowerCase(c) == 'l') {
-                worldGenerator = Util.loadWorld();
-                break;
-            }
-            if (Character.toLowerCase(c) == 'q') {
-                System.exit(0);
-                return;
-            }
-        }
+        WorldGenerator worldGenerator = gameUI.begin();
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         if (worldGenerator == null) {
             worldGenerator = new WorldGenerator(WIDTH, HEIGHT, gameUI.getSeed());
         }
-        ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT + 2, 0, 0);
         worldGenerator.drawWorld(world);
         ter.renderFrame(world);
+        TETile underMouse = Tileset.NOTHING;
+        boolean flag = false;
+        int x = (int) StdDraw.mouseX();
+        int y = (int) StdDraw.mouseY();
         while (true) {
+            if (x != (int)StdDraw.mouseX() || y != (int)StdDraw.mouseY()) {
+                x = (int)StdDraw.mouseX();
+                y = (int)StdDraw.mouseY();
+                if ( x < WIDTH &&  y < HEIGHT) {
+                    underMouse = world[x][y];
+                }
+                ter.renderFrame(world);
+                gameUI.underMouse(underMouse);
+            }
             if (!StdDraw.hasNextKeyTyped()) {
                 continue;
             }
             char c = Character.toLowerCase(StdDraw.nextKeyTyped());
             switch (c) {
-                case 'w' : {
-                    worldGenerator.playerMove(world, Util.Direction.NORTH);
-                    break;
-                }
-                case 'a' : {
-                    worldGenerator.playerMove(world, Util.Direction.WEST);
-                    break;
-                }
-                case 'd' : {
-                    worldGenerator.playerMove(world, Util.Direction.EAST);
-                    break;
-                }
-                case 's' : {
-                    worldGenerator.playerMove(world, Util.Direction.SOUTH);
+                case ':' : {
+                    flag = true;
                     break;
                 }
                 case 'q' : {
-                    Util.saveWorld(worldGenerator);
-                    System.exit(0);
+                    if (flag) {
+                        Util.saveWorld(worldGenerator);
+                        System.exit(0);
+                    }
                     break;
                 }
-                default:
-                    break;
+                default: {
+                    flag = false;
+                    worldGenerator.playerMove(world, c);
+                    ter.renderFrame(world);
+                    gameUI.underMouse(underMouse);
+                }
             }
-            ter.renderFrame(world);
         }
     }
 
@@ -90,28 +81,72 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
-        long seed = 0;
-        try {
-            StringReader reader = new StringReader(input.toLowerCase());
-            while (true) {
-                if (reader.read() == 'n') {
-                    break;
-                }
+        StringReader reader = new StringReader(input.toLowerCase());
+        TETile[][] world = new TETile[WIDTH][HEIGHT];
+        WorldGenerator worldGenerator = null;
+        while (true) {
+            int c = 0;
+            try {
+                c = reader.read();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            if (c == 'n') {
+                break;
+            }
+            if (c == 'l') {
+                worldGenerator = Util.loadWorld();
+                break;
+            }
+            if (c == 'q') {
+                System.exit(0);
+            }
+        }
+        if (worldGenerator == null) {
+            int seed = 0;
             while (true) {
-                int c = reader.read();
+                int c = 0;
+                try {
+                    c = reader.read();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 if (c == 's') {
                     break;
                 }
-                seed = (c - '0')  + seed * 10;
+                seed = (c - '0') + seed * 10;
             }
-            reader.close();
-        } catch (java.io.IOException e) {
-            throw new RuntimeException("Error during startup of service", e);
+            worldGenerator = new WorldGenerator(WIDTH, HEIGHT, seed);
         }
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
-        WorldGenerator worldGenerator = new WorldGenerator(WIDTH, HEIGHT, seed);
         worldGenerator.drawWorld(world);
-        return world;
+        boolean flag = false;
+        while (true) {
+            int c = 0;
+            try {
+                c = reader.read();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (c == -1) {
+                return world;
+            }
+            switch (c) {
+                case ':': {
+                    flag = true;
+                    break;
+                }
+                case 'q': {
+                    if (flag) {
+                        Util.saveWorld(worldGenerator);
+                        return world;
+                    }
+                    break;
+                }
+                default: {
+                    flag = false;
+                    worldGenerator.playerMove(world, (char)c);
+                }
+            }
+        }
     }
 }
