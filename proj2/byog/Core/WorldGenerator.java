@@ -4,7 +4,6 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.awt.Point;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ public class WorldGenerator implements Serializable {
     private List<Room> roomList;
     private List<Halfway> wayList;
 
-    @Serial
     private static final long serialVersionUID = 82188832479874L;
 
 

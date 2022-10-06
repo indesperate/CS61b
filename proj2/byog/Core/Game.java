@@ -33,10 +33,10 @@ public class Game {
         int x = (int) StdDraw.mouseX();
         int y = (int) StdDraw.mouseY();
         while (true) {
-            if (x != (int)StdDraw.mouseX() || y != (int)StdDraw.mouseY()) {
-                x = (int)StdDraw.mouseX();
-                y = (int)StdDraw.mouseY();
-                if ( x < WIDTH &&  y < HEIGHT) {
+            if (x != (int) StdDraw.mouseX() || y != (int) StdDraw.mouseY()) {
+                x = (int) StdDraw.mouseX();
+                y = (int) StdDraw.mouseY();
+                if (x < WIDTH && y < HEIGHT) {
                     underMouse = world[x][y];
                 }
                 ter.renderFrame(world);
@@ -47,11 +47,11 @@ public class Game {
             }
             char c = Character.toLowerCase(StdDraw.nextKeyTyped());
             switch (c) {
-                case ':' : {
+                case ':': {
                     flag = true;
                     break;
                 }
-                case 'q' : {
+                case 'q': {
                     if (flag) {
                         Util.saveWorld(worldGenerator);
                         System.exit(0);
@@ -144,7 +144,7 @@ public class Game {
                 }
                 default: {
                     flag = false;
-                    worldGenerator.playerMove(world, (char)c);
+                    worldGenerator.playerMove(world, (char) c);
                 }
             }
         }
