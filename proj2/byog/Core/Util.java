@@ -4,7 +4,6 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.awt.Point;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -214,12 +213,8 @@ public class Util {
     }
 
     public static void saveWorld(WorldGenerator worldGenerator) {
-        File f = new File("./world.ser");
         try {
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            FileOutputStream fs = new FileOutputStream(f);
+            FileOutputStream fs = new FileOutputStream("save_file.txt");
             ObjectOutputStream os = new ObjectOutputStream(fs);
             os.writeObject(worldGenerator);
             os.close();
@@ -233,24 +228,21 @@ public class Util {
     }
 
     public static WorldGenerator loadWorld() {
-        File f = new File("./world.ser");
-        if (f.exists()) {
-            try {
-                FileInputStream fs = new FileInputStream(f);
-                ObjectInputStream os = new ObjectInputStream(fs);
-                WorldGenerator loadWorld = (WorldGenerator) os.readObject();
-                os.close();
-                return loadWorld;
-            } catch (FileNotFoundException e) {
-                System.out.println("file not found");
-                System.exit(0);
-            } catch (IOException e) {
-                System.out.println(e);
-                System.exit(0);
-            } catch (ClassNotFoundException e) {
-                System.out.println("class not found");
-                System.exit(0);
-            }
+        try {
+            FileInputStream fs = new FileInputStream("save_file.txt");
+            ObjectInputStream os = new ObjectInputStream(fs);
+            WorldGenerator loadWorld = (WorldGenerator) os.readObject();
+            os.close();
+            return loadWorld;
+        } catch (FileNotFoundException e) {
+            System.out.println("file not found");
+            System.exit(0);
+        } catch (IOException e) {
+            System.out.println(e);
+            System.exit(0);
+        } catch (ClassNotFoundException e) {
+            System.out.println("class not found");
+            System.exit(0);
         }
         return null;
     }
