@@ -10,12 +10,13 @@ public class Percolation {
     private final WeightedQuickUnionUF unionUF;
     private final WeightedQuickUnionUF unionUFIn;
     private int numOpen = 0;
+
     public Percolation(int N) {
         if (N <= 0) {
             throw new java.lang.IllegalArgumentException("N must greater than zero");
         }
         state = new boolean[N][N];
-        unionUF = new WeightedQuickUnionUF( N * N + 1);
+        unionUF = new WeightedQuickUnionUF(N * N + 1);
         unionUFIn = new WeightedQuickUnionUF(N * N + 2);
         top = N * N;
         bottom = top + 1;
@@ -31,7 +32,7 @@ public class Percolation {
         return rol * N + col;
     }
 
-    private void connectAround(WeightedQuickUnionUF unionUF,int row, int col) {
+    private void connectAround(WeightedQuickUnionUF unionUF, int row, int col) {
         if (row > 0 && isOpen(row - 1, col)) {
             unionUF.union(xyToUF(row, col), xyToUF(row - 1, col));
         }
@@ -47,12 +48,15 @@ public class Percolation {
     }
 
     public void open(int row, int col) {
+        if (isOpen(row, col)) {
+            return;
+        }
         if (row >= N || col >= N) {
             throw new java.lang.IndexOutOfBoundsException("out of index");
         }
         state[row][col] = true;
         numOpen += 1;
-        connectAround(unionUF,row, col);
+        connectAround(unionUF, row, col);
         if (!percolates()) {
             connectAround(unionUFIn, row, col);
         }
@@ -80,6 +84,9 @@ public class Percolation {
     }
 
     public boolean percolates() {
+        if (N == 1) {
+            return isOpen(0, 0);
+        }
         return unionUFIn.connected(top, bottom);
     }
 
