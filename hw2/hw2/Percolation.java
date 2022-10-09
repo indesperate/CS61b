@@ -32,18 +32,18 @@ public class Percolation {
         return rol * N + col;
     }
 
-    private void connectAround(WeightedQuickUnionUF unionUF, int row, int col) {
+    private void connectAround(WeightedQuickUnionUF inUnionUF, int row, int col) {
         if (row > 0 && isOpen(row - 1, col)) {
-            unionUF.union(xyToUF(row, col), xyToUF(row - 1, col));
+            inUnionUF.union(xyToUF(row, col), xyToUF(row - 1, col));
         }
         if (row < N - 1 && isOpen(row + 1, col)) {
-            unionUF.union(xyToUF(row, col), xyToUF(row + 1, col));
+            inUnionUF.union(xyToUF(row, col), xyToUF(row + 1, col));
         }
         if (col > 0 && isOpen(row, col - 1)) {
-            unionUF.union(xyToUF(row, col), xyToUF(row, col - 1));
+            inUnionUF.union(xyToUF(row, col), xyToUF(row, col - 1));
         }
         if (col < N - 1 && isOpen(row, col + 1)) {
-            unionUF.union(xyToUF(row, col), xyToUF(row, col + 1));
+            inUnionUF.union(xyToUF(row, col), xyToUF(row, col + 1));
         }
     }
 
