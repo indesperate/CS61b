@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import lab9.BSTMap;
 
+import java.net.Inet4Address;
+
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
  */
@@ -84,6 +86,23 @@ public class TestBSTMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void sanityIterTest() {
+        BSTMap<Integer, String> b = new BSTMap<>();
+        b.put(1, "hi");
+        b.put(4, "hi");
+        b.put(2, "hi");
+        b.put(9, "hi");
+        b.put(5, "hi");
+        b.put(6, "hi");
+        b.put(16, "hi");
+        b.put(26, "hi");
+        b.put(3, "hi");
+        for (Integer k : b.keySet()) {
+            System.out.println(k);
+        }
     }
 
     public static void main(String[] args) {
