@@ -2,7 +2,6 @@ package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,21 +11,26 @@ public class Solver {
     int moves;
     /* the nearest path */
     List<WorldState> path;
+
     /* inner search node */
     private static class SearchNode implements Comparable<SearchNode> {
         WorldState worldState;
         int moves;
         SearchNode previous;
+
         SearchNode(WorldState worldState, int moves, SearchNode previous) {
             this.worldState = worldState;
             this.moves = moves;
             this.previous = previous;
         }
+
         @Override
         public int compareTo(SearchNode o) {
             return this.moves + this.worldState.estimatedDistanceToGoal() - o.moves - o.worldState.estimatedDistanceToGoal();
         }
+
     }
+
     /**
      * Constructor which solves the puzzle, computing
      * everything necessary for moves() and solution()
@@ -43,16 +47,16 @@ public class Solver {
             SearchNode nearestNode = minPQ.delMin();
             if (nearestNode.worldState.isGoal()) {
                 this.moves = nearestNode.moves;
-                while (nearestNode.previous.worldState != initial) {
+                while (nearestNode != null) {
                     path.add(0, nearestNode.worldState);
                     nearestNode = nearestNode.previous;
                 }
-                path.add(0, initial);
                 break;
             }
-            int moves = nearestNode.moves;
             for (WorldState neighbour : nearestNode.worldState.neighbors()) {
-                minPQ.insert(new SearchNode(neighbour, moves + 1, nearestNode));
+                if (nearestNode.previous == null || !neighbour.equals(nearestNode.previous.worldState)) {
+                    minPQ.insert(new SearchNode(neighbour, nearestNode.moves + 1, nearestNode));
+                }
             }
         }
     }
