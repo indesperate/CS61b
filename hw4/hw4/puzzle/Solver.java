@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Solver {
     /* the moves of the nearest path */
-    int moves;
+    private final int moves;
     /* the nearest path */
-    List<WorldState> path;
+    private final List<WorldState> path;
 
     /* inner search node */
     private static class SearchNode implements Comparable<SearchNode> {
@@ -26,7 +26,8 @@ public class Solver {
 
         @Override
         public int compareTo(SearchNode o) {
-            return this.moves + this.worldState.estimatedDistanceToGoal() - o.moves - o.worldState.estimatedDistanceToGoal();
+            return this.moves + this.worldState.estimatedDistanceToGoal()
+                    - o.moves - o.worldState.estimatedDistanceToGoal();
         }
 
     }
@@ -54,7 +55,8 @@ public class Solver {
                 break;
             }
             for (WorldState neighbour : nearestNode.worldState.neighbors()) {
-                if (nearestNode.previous == null || !neighbour.equals(nearestNode.previous.worldState)) {
+                if (nearestNode.previous == null ||
+                        !neighbour.equals(nearestNode.previous.worldState)) {
                     minPQ.insert(new SearchNode(neighbour, nearestNode.moves + 1, nearestNode));
                 }
             }

@@ -4,45 +4,50 @@ import edu.princeton.cs.algs4.Queue;
 
 public class Board implements WorldState {
     private final int[][] tiles;
-    private final int N;
+    private final int size;
     private static final int BLANK = 0;
     private final int manhan;
+
     /**
      * Construct a board from an N-by-N array of tiles where
      * tiles[i][j] = tile at row i, colum j
+     *
      * @param tiles the input tiles
      */
     public Board(int[][] tiles) {
         int rowLength = tiles.length;
         int colLength = tiles[0].length;
         assert rowLength == colLength;
-        N = rowLength;
-        this.tiles = new int[N][N];
-        for (int i = 0; i < N; i += 1) {
-            System.arraycopy(tiles[i], 0, this.tiles[i], 0, N);
+        size = rowLength;
+        this.tiles = new int[size][size];
+        for (int i = 0; i < size; i += 1) {
+            System.arraycopy(tiles[i], 0, this.tiles[i], 0, size);
         }
         manhan = manhattan();
     }
 
     /**
      * Return the value of tile at row i, column j (or 0 if blank)
+     *
      * @param i row
      * @param j colum
      * @return value
      */
     public int tileAt(int i, int j) {
-        if (i >= N || i < 0 || j >= N || j < 0) {
-            throw new java.lang.IllegalArgumentException("i or j must be less than N, bigger than zero");
+        if (i >= size || i < 0 || j >= size || j < 0) {
+            throw new java.lang.IndexOutOfBoundsException(
+                    "i or j must be less than N, bigger than zero");
         }
         return tiles[i][j];
     }
 
     /**
      * return the board size N
+     *
      * @return N
      */
     public int size() {
-        return N;
+        return size;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class Board implements WorldState {
     /**
      * return the neighbors of the current board
      * cite from josh-hog
+     *
      * @return the neighbors
      */
     @Override
@@ -92,10 +98,10 @@ public class Board implements WorldState {
 
     public int hamming() {
         int hamming = 0;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
-                int goalNumAtIJ = i * N + j + 1;
-                if (tileAt(i,j) != BLANK) {
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
+                int goalNumAtIJ = i * size + j + 1;
+                if (tileAt(i, j) != BLANK && goalNumAtIJ != BLANK) {
                     hamming += Math.abs(tileAt(i, j) - goalNumAtIJ);
                 }
             }
@@ -105,17 +111,22 @@ public class Board implements WorldState {
 
     public int manhattan() {
         int manhattan = 0;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
                 int numAtIJ = tileAt(i, j);
                 if (numAtIJ != BLANK) {
-                    int row = (numAtIJ - 1) / N;
-                    int col = (numAtIJ - 1) % N;
+                    int row = (numAtIJ - 1) / size;
+                    int col = (numAtIJ - 1) % size;
                     manhattan += (Math.abs(row - i) + Math.abs(col - j));
                 }
             }
         }
         return manhattan;
+    }
+
+    @Override
+    public int hashCode() {
+        return size;
     }
 
     public boolean equals(Object y) {
@@ -125,9 +136,9 @@ public class Board implements WorldState {
         if (y == null || this.getClass() != y.getClass()) {
             return false;
         }
-        Board board = (Board)y;
-        for (int i = 0; i < N; i += 1) {
-            for (int j = 0; j < N; j += 1) {
+        Board board = (Board) y;
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
                 if (board.tiles[i][j] != this.tiles[i][j]) {
                     return false;
                 }
