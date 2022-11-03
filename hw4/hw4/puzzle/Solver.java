@@ -55,8 +55,8 @@ public class Solver {
                 break;
             }
             for (WorldState neighbour : nearestNode.worldState.neighbors()) {
-                if (nearestNode.previous == null ||
-                        !neighbour.equals(nearestNode.previous.worldState)) {
+                if (nearestNode.previous == null
+                        || !neighbour.equals(nearestNode.previous.worldState)) {
                     minPQ.insert(new SearchNode(neighbour, nearestNode.moves + 1, nearestNode));
                 }
             }

@@ -101,8 +101,8 @@ public class Board implements WorldState {
         for (int i = 0; i < size; i += 1) {
             for (int j = 0; j < size; j += 1) {
                 int goalNumAtIJ = i * size + j + 1;
-                if (tileAt(i, j) != BLANK && goalNumAtIJ != BLANK) {
-                    hamming += Math.abs(tileAt(i, j) - goalNumAtIJ);
+                if (tileAt(i, j) != goalNumAtIJ && goalNumAtIJ != size * size) {
+                    hamming += 1;
                 }
             }
         }
@@ -137,6 +137,9 @@ public class Board implements WorldState {
             return false;
         }
         Board board = (Board) y;
+        if (board.size != this.size) {
+            return false;
+        }
         for (int i = 0; i < size; i += 1) {
             for (int j = 0; j < size; j += 1) {
                 if (board.tiles[i][j] != this.tiles[i][j]) {
