@@ -8,9 +8,62 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
+    double latPhase;
+    double lonPhase;
+    int beginLatNum;
+    int endLatNum;
+    int beginLonNum;
+    int endLonNum;
+    int depth;
 
     public Rasterer() {
-        // YOUR CODE HERE
+    }
+
+    private void calculateDepth(double lrlon, double ullon, double w) {
+        double lonDPPQuery = (lrlon - ullon) / w;
+        double lonDPPOrigin = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / MapServer.TILE_SIZE;
+        depth = (int) Math.ceil(Math.log(lonDPPOrigin / lonDPPQuery) / Math.log(2));
+        if (depth > 7) {
+            depth = 7;
+        }
+    }
+
+    private void calculateSteps(double ullat, double lrlat, double ullon, double lrlon) {
+        double latRange = MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT;
+        double lonRange = MapServer.ROOT_LRLON - MapServer.ROOT_ULLON;
+        latPhase = latRange / Math.pow(2, depth);
+        lonPhase = lonRange / Math.pow(2, depth);
+        beginLatNum = (int) Math.floor((MapServer.ROOT_ULLAT - ullat) / latPhase);
+        endLatNum = (int) Math.floor((MapServer.ROOT_ULLAT - lrlat) / latPhase);
+        beginLonNum = (int) Math.floor((ullon - MapServer.ROOT_ULLON) / lonPhase);
+        endLonNum = (int) Math.floor((lrlon - MapServer.ROOT_ULLON) / lonPhase);
+    }
+
+    private void checkSteps() {
+        if (beginLonNum < 0) {
+            beginLonNum = 0;
+        }
+        if (beginLatNum < 0) {
+            beginLatNum = 0;
+        }
+        if (endLonNum >= Math.pow(2, depth)) {
+            endLonNum = (int) Math.pow(2, depth) - 1;
+        }
+        if (endLatNum >= Math.pow(2, depth)) {
+            endLatNum = (int) Math.pow(2, depth) - 1;
+        }
+    }
+
+    private String[][] createRenderGrid() {
+        int lonNumRange = endLonNum - beginLonNum + 1;
+        int latNumRange = endLatNum - beginLatNum + 1;
+        String[][] renderGrid = new String[latNumRange][lonNumRange];
+        for (int i = 0; i < latNumRange; i += 1) {
+            for (int j = 0; j < lonNumRange; j += 1) {
+                renderGrid[i][j] = "d" + depth + "_x" + (j + beginLonNum) + "_y" + (i + beginLatNum) + ".png";
+            }
+        }
+        return renderGrid;
     }
 
     /**
@@ -41,49 +94,16 @@ public class Rasterer {
      * forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        //System.out.println(params);
         Map<String, Object> results = new HashMap<>();
         double lrlon = params.get("lrlon");
         double ullon = params.get("ullon");
         double lrlat = params.get("lrlat");
         double ullat = params.get("ullat");
         double w = params.get("w");
-        //double h = params.get("h");
-        double lonDPPQuery = (lrlon - ullon) / w;
-        double lonDPPOrigin = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / MapServer.TILE_SIZE;
-        int depth = (int) Math.ceil(Math.log(lonDPPOrigin / lonDPPQuery) / Math.log(2));
-        if (depth > 7) {
-            depth = 7;
-        }
-        double latRange = MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT;
-        double lonRange = MapServer.ROOT_LRLON - MapServer.ROOT_ULLON;
-        double latPhase = latRange / Math.pow(2, depth);
-        double lonPhase = lonRange / Math.pow(2, depth);
-        int beginLatNum = (int) Math.floor((MapServer.ROOT_ULLAT - ullat) / latPhase);
-        int endLatNum = (int) Math.floor((MapServer.ROOT_ULLAT - lrlat) / latPhase);
-        int beginLonNum = (int) Math.floor((ullon - MapServer.ROOT_ULLON) / lonPhase);
-        int endLonNum = (int) Math.floor((lrlon - MapServer.ROOT_ULLON) / lonPhase);
-        if (beginLonNum < 0) {
-            beginLonNum = 0;
-        }
-        if (beginLatNum < 0) {
-            beginLatNum = 0;
-        }
-        if (endLonNum >= Math.pow(2, depth)) {
-            endLonNum = (int) Math.pow(2, depth) - 1;
-        }
-        if (endLatNum >= Math.pow(2, depth)) {
-            endLatNum = (int) Math.pow(2, depth) - 1;
-        }
-        int lonNumRange = endLonNum - beginLonNum + 1;
-        int latNumRange = endLatNum - beginLatNum + 1;
-        String[][] renderGrid = new String[latNumRange][lonNumRange];
-        for (int i = 0; i < latNumRange; i += 1) {
-            for (int j = 0; j < lonNumRange; j += 1) {
-                renderGrid[i][j] = "d" + depth + "_x" + (j + beginLonNum) + "_y" + (i + beginLatNum) + ".png";
-            }
-        }
-        //System.out.println(Arrays.deepToString(renderGrid));
+        calculateDepth(lrlon, ullon, w);
+        calculateSteps(ullat, lrlat, ullon, lrlon);
+        checkSteps();
+        String[][] renderGrid = createRenderGrid();
         results.put("render_grid", renderGrid);
         results.put("depth", depth);
         results.put("raster_ul_lat", MapServer.ROOT_ULLAT - beginLatNum * latPhase);
@@ -91,7 +111,6 @@ public class Rasterer {
         results.put("raster_ul_lon", MapServer.ROOT_ULLON + beginLonNum * lonPhase);
         results.put("raster_lr_lon", MapServer.ROOT_ULLON + (endLonNum + 1) * lonPhase);
         results.put("query_success", true);
-        //System.out.println("DONE");
         return results;
     }
 
