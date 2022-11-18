@@ -44,10 +44,8 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        System.out.println(params);
+        //System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
         double lrlon = params.get("lrlon");
         double ullon = params.get("ullon");
         double lrlat = params.get("lrlat");
@@ -88,15 +86,15 @@ public class Rasterer {
                 renderGrid[i][j] = "d" + depth + "_x" + (j + BeginLonNum) + "_y" + (i + BeginLatNum) + ".png";
             }
         }
-        System.out.println(Arrays.deepToString(renderGrid));
+        //System.out.println(Arrays.deepToString(renderGrid));
         results.put("render_grid", renderGrid);
         results.put("depth", depth);
         results.put("raster_ul_lat", MapServer.ROOT_ULLAT - BeginLatNum * latPhase);
         results.put("raster_lr_lat", MapServer.ROOT_ULLAT - (EndLatNum + 1) * latPhase);
-        results.put("raster_ul_lon", MapServer.ROOT_ULLON + BeginLonNum * lonRange);
+        results.put("raster_ul_lon", MapServer.ROOT_ULLON + BeginLonNum * lonPhase);
         results.put("raster_lr_lon", MapServer.ROOT_ULLON + (EndLonNum + 1) * lonPhase);
         results.put("query_success", true);
-        System.out.println("DONE");
+        //System.out.println("DONE");
         return results;
     }
 
