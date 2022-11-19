@@ -1,5 +1,5 @@
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +12,35 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+    private static class SearchNode implements Comparable<SearchNode> {
+        private final long id;
+        private SearchNode parent;
+        private double distance;
+        private final GraphDB graphDB;
+        private final long dest;
+
+
+        SearchNode(long id, long dest, GraphDB graphDB) {
+            this.id = id;
+            this.parent = null;
+            this.dest = dest;
+            this.distance = 0.0;
+            this.graphDB = graphDB;
+        }
+        SearchNode(long id, long dest, SearchNode parent, GraphDB graphDB) {
+            this.id = id;
+            this.parent = parent;
+            this.dest = dest;
+            this.distance = parent.distance + graphDB.distance(id, parent.id);
+            this.graphDB = graphDB;
+        }
+
+        @Override
+        public int compareTo(SearchNode o) {
+            double cmp = distance + graphDB.distance(id, dest) - o.distance - graphDB.distance(o.id, o.dest);
+            return Double.compare(cmp, 0.0);
+        }
+    }
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +54,41 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long start = g.closest(stlon, stlat);
+        long dest = g.closest(destlon, destlat);
+        HashMap<Long, SearchNode> marked = new HashMap<>();
+        PriorityQueue<SearchNode> searchQueue = new PriorityQueue<>();
+        SearchNode beginNode = new SearchNode(start, dest, g);
+        searchQueue.add(beginNode);
+        marked.put(start, beginNode);
+        List<Long> path = new LinkedList<>();
+        while (!searchQueue.isEmpty()) {
+            SearchNode searchNode = searchQueue.poll();
+            long p = searchNode.id;
+            if (p == dest) {
+                while (searchNode.parent != null) {
+                    path.add(0, searchNode.id);
+                    searchNode = searchNode.parent;
+                }
+                path.add(0, start);
+                return path;
+            }
+            for (Long v : g.adjacent(p)) {
+                if (marked.get(v) == null) {
+                    SearchNode neighbour = new SearchNode(v, dest, searchNode, g);
+                    searchQueue.add(neighbour);
+                    marked.put(v, neighbour);
+                } else {
+                    SearchNode neighbour = new SearchNode(v, dest, searchNode, g);
+                    SearchNode origin = marked.get(v);
+                    if (neighbour.compareTo(origin) < 0) {
+                        searchQueue.add(neighbour);
+                        marked.replace(v, neighbour);
+                    }
+                }
+            }
+        }
+        return path;
     }
 
     /**
