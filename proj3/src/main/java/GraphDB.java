@@ -9,6 +9,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -27,16 +28,25 @@ public class GraphDB {
         private final double lat;
         private final double lon;
         private final List<Long> adjacentList;
+        private final List<String> pathNameList;
         private String name;
         public Node (double lat, double lon) {
             this.lat = lat;
             this.lon = lon;
             adjacentList = new ArrayList<>();
+            pathNameList = new ArrayList<>();
             name = "";
         }
 
-        public void addNeighbour(long id) {
+        public String getPathName(long other) {
+            int index = adjacentList.indexOf(other);
+            assert index >= 0;
+            return pathNameList.get(index);
+        }
+
+        public void addNeighbour(long id, String pathName) {
             adjacentList.add(id);
+            pathNameList.add(pathName);
         }
 
         public boolean isAlone() {
@@ -78,9 +88,13 @@ public class GraphDB {
         graph.get(id).setName(name);
     }
 
-     void addEdge(long first, long second) {
-        graph.get(first).addNeighbour(second);
-        graph.get(second).addNeighbour(first);
+     void addEdge(long first, long second, String pathName) {
+        graph.get(first).addNeighbour(second, pathName);
+        graph.get(second).addNeighbour(first, pathName);
+    }
+
+    public String getPathName(long first, long second) {
+        return graph.get(first).getPathName(second);
     }
 
     /**

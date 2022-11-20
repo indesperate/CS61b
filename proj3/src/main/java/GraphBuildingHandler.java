@@ -39,6 +39,7 @@ public class GraphBuildingHandler extends DefaultHandler {
     private final GraphDB g;
     private Long previousNodeId;
     private boolean valid;
+    private String pathName;
 
     /**
      * Create a new GraphBuildingHandler.
@@ -48,6 +49,7 @@ public class GraphBuildingHandler extends DefaultHandler {
         this.g = g;
         nodes = new LinkedList<>();
         previousNodeId = -1L;
+        pathName = "";
         valid = false;
     }
 
@@ -115,6 +117,7 @@ public class GraphBuildingHandler extends DefaultHandler {
 
                 /* Hint: Setting a "flag" is good enough! */
             } else if (k.equals("name")) {
+                pathName = v;
                 //System.out.println("Way Name: " + v);
             }
 //            System.out.println("Tag with k=" + k + ", v=" + v + ".");
@@ -151,12 +154,13 @@ public class GraphBuildingHandler extends DefaultHandler {
                 Long previous = nodes.poll();
                 while (!nodes.isEmpty()) {
                     Long current = nodes.poll();
-                    g.addEdge(previous, current);
+                    g.addEdge(previous, current, pathName);
                     previous = current;
                 }
             } else {
                 nodes.clear();
             }
+            pathName = "";
             valid = false;
         }
     }

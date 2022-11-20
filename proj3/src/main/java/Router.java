@@ -1,4 +1,5 @@
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,7 +101,60 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        Long first = route.get(0);
+        Long sec = route.get(1);
+        List<NavigationDirection> guide = new LinkedList<>();
+        NavigationDirection node = new NavigationDirection();
+        node.distance = 0.0;
+        node.way = g.getPathName(first, sec);
+        double previousDegree = g.bearing(first, sec);
+        for (Long second : route) {
+            if (Objects.equals(first, second)) {
+                continue;
+            }
+            String currentWay = g.getPathName(first, second);
+            double currentDistance = g.distance(first, second);
+            double currentDegree = g.bearing(first, second);
+            if (Objects.equals(currentWay, node.way)) {
+                node.distance += currentDistance;
+            } else {
+                guide.add(node);
+                node = new NavigationDirection();
+                node.direction = calculateDirection(previousDegree, currentDegree);
+                node.distance = currentDistance;
+                node.way = currentWay;
+            }
+            previousDegree = currentDegree;
+            first = second;
+        }
+        guide.add(node);
+        guide.get(0).direction = NavigationDirection.START;
+        return guide;
+    }
+
+    private static int calculateDirection(double first, double second) {
+        double degrees = second - first;
+        if (degrees < -180.) {
+            degrees += 360.;
+        }
+        if (degrees > 180.) {
+            degrees -= 360.;
+        }
+        if (degrees <= 15. && degrees >= -15.) {
+            return NavigationDirection.STRAIGHT;
+        } else if (degrees >= -30. && degrees <= -15.) {
+            return NavigationDirection.SLIGHT_LEFT;
+        } else if (degrees >= 15. && degrees <= 30) {
+            return NavigationDirection.SLIGHT_RIGHT;
+        } else if (degrees >= -100. && degrees <= -30.) {
+            return NavigationDirection.LEFT;
+        } else if (degrees >= 30. && degrees <= 100.) {
+            return NavigationDirection.RIGHT;
+        } else if (degrees <= -100) {
+            return NavigationDirection.SHARP_LEFT;
+        } else {
+            return NavigationDirection.SHARP_RIGHT;
+        }
     }
 
 
