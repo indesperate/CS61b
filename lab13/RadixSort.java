@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 /**
  * Class for doing Radix sort
  *
@@ -16,8 +21,16 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        int max = Integer.MIN_VALUE;
+        String[] sorted = new String[asciis.length];
+        for (int i = 0; i < asciis.length; i += 1) {
+            max = Math.max(max, asciis[i].length());
+            sorted[i] = asciis[i];
+        }
+        for (int i = 1; i <= max; i += 1) {
+            sortHelperLSD(sorted, max - i);
+        }
+        return sorted;
     }
 
     /**
@@ -27,8 +40,33 @@ public class RadixSort {
      * @param index The position to sort the Strings on.
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        // Optional LSD helper method for required LSD radix sort
-        return;
+        int[] counts = new int[128];
+        int placeHolder = 0;
+        String[] before = new String[asciis.length];
+        System.arraycopy(asciis, 0, before, 0, asciis.length);
+        for (String item: asciis) {
+            if (index >= item.length()) {
+                placeHolder += 1;
+            } else {
+                counts[item.charAt(index)] += 1;
+            }
+        }
+        int[] starts = new int[128];
+        int pos = placeHolder;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+        int placeHolderIndex = 0;
+        for (String item : before) {
+            if (index >= item.length()) {
+                asciis[placeHolderIndex] = item;
+                placeHolderIndex += 1;
+            }
+            int place = starts[item.charAt(index)];
+            asciis[place] = item;
+            starts[item.charAt(index)] += 1;
+        }
     }
 
     /**
