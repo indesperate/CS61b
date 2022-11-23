@@ -62,6 +62,7 @@ public class RadixSort {
             if (index >= item.length()) {
                 asciis[placeHolderIndex] = item;
                 placeHolderIndex += 1;
+                continue;
             }
             int place = starts[item.charAt(index)];
             asciis[place] = item;
